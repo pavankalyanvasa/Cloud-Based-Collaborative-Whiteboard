@@ -1,0 +1,37 @@
+{
+  "name": "whiteboard",
+  "version": "1.0.0",
+  "description": "A collaborative whiteboard",
+  "main": "index.js",
+  "keywords": [
+    "socket.io",
+    "whiteboard",
+    "collaborative",
+    "express.js"
+  ],
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+    "eslint": "^7.14.0",
+    "express": "4.9.x",
+    "socket.io": "latest"
+  },
+  "devDependencies": {
+    "babel-eslint": "^7.1.0",
+    "eslint": "^3.9.1",
+    "eslint-config-airbnb": "^13.0.0",
+    "eslint-plugin-import": "^2.18.2",
+    "eslint-plugin-jsx-a11y": "^2.2.3",
+    "eslint-plugin-react": "^6.6.0",
+    "mocha": "^3.2.0",
+    "nodemon": "^1.19.1",
+    "should": "^11.1.1",
+    "supertest": "^2.0.0"
+  },
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon --exec node index.js"
+  },
+  "author": "",
+  "license": ""
+}

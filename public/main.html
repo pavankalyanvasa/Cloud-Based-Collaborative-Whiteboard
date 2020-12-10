@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="description" content=" Collaborative WhiteBoard System">
+    <title>Collaborative Whiteboard System</title>
+    <link href="assets/css/whiteboard.css" rel="stylesheet">
+    <style>
+      #WhiteBoardToolbar{
+        position: -webkit-sticky; /* Safari */
+        position: sticky;
+        top: 0;
+      }
+      #content{
+        position: -webkit-sticky; /* Safari */
+        position: sticky;
+        top: 0;
+      }
+      .tooltip {
+      position: relative;
+      display: inline-block;
+      border-bottom: 1px dotted rgb(46, 43, 43);
+    }
+
+    .tooltip .tooltiptext {
+      visibility: hidden;
+      width: 125px;
+      text-align: center;
+      border-radius: 5px;
+      background-color: rgb(37, 37, 37);
+      color: rgb(236, 232, 232);
+      padding: 4px 0;
+      z-index: 1;
+      position: absolute;
+   
+    }
+
+    .tooltip:hover .tooltiptext {
+      visibility: visible;
+    }
+</style>
+    </style>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src='https://kit.fontawesome.com/a076d05399.js'></script>
+    <script src="assets/js/client_type.js"></script>
+    
+  
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    
+    <link href="assets/css/head.css" rel="stylesheet">
+  </head>
+    
+  <body >
+    <div id="content">
+      <div id="mysnackbar11"><i class="fa fa-warning" style="font-size:25px;color:rgb(173, 206, 29)"></i><span id="mysnackbar"></span> </div>
+      <!-- Topbar -->
+      <nav class="navbar topbar navbar-light navbar-expand bg-white  mb-4  shadow static-top" id="navbar">
+        <div style=" margin-bottom: 5px; padding: 7px !important; width:79% ;">
+         <div style=" width: 160px!important;margin-left: 150px; display: inline-block;">Your Status:<strong id="desc"></strong> </div> 
+         <div style=" width: 100px!important;display: inline-block;">Total:<strong id="Total">1</strong> </div> 
+         <div style="display: inline-block;width: 100px!important;"> Working:<strong id="Working">0</strong> </div> 
+         <!-- <div style="display: inline-block;width: 100px!important;">Observer:<strong id="Observer">0</strong> </div>  -->
+        </div>
+          <ul class=" navbar-nav ml-auto " id="dropdown_list">
+              <li class="dropdown no-arrow nav-item " id="dropdown_list_userAvatar">
+                  <a class="nav-link userAvatar dropdown-toggle " href="#" id="userDropdown" data-toggle="dropdown" role="button"
+                       aria-expanded="false aria-haspopup="true" ">
+                      <span id="userName" class="mr-2 d-none d-lg-inline text-gray-600 small  "></span>
+                      <img class="rounded-circle img-profile " src="assets/userAvatar.svg"> </a>
+                
+                  <!-- Dropdown - User Information -->
+                  <div class=" shadow animated--grow-in dropdown-menu  dropdown-menu-right"
+                      aria-labelledby="userDropdown">
+                      <a class="dropdown-item" id="signout">
+                          <i class="fas  fa-sm fa-sign-out-alt fa-fw mr-2  text-gray-400"></i>
+                          SignOut
+                      </a>
+                      <a class="dropdown-item" href="#" data-toggle="modal" data-target="#userListModal">
+                        <i class="fas fa-table fa-sm fa-fw mr-2 text-gray-400"></i>
+                        Users List
+                    </a>
+                   
+                      <a class="dropdown-item" href="#" data-toggle="modal" data-target="#workingListModal">
+                        <i class="fas fa-table fa-sm fa-fw mr-2 text-gray-400"></i>
+                        Working User List
+                    </a>
+                    <a class="dropdown-item" id="save_confirm" href="#" data-toggle="modal" data-target="#SaveConfirmModal" style="display: none;">
+                      Save image
+                  </a>
+                  <a class="dropdown-item" id="json_save_confirm" href="#" data-toggle="modal" data-target="#jsonSaveConfirmModal" style="display: none;">
+                    Save as Json file
+                </a>
+                  <a class="dropdown-item" id="jsonSave_modal" href="#" data-toggle="modal" data-target="#jsonSaveModal" style="display: none;">
+                    Save as Json file
+                </a>
+                <a class="dropdown-item" id="json_upload_modal" href="#" data-toggle="modal" data-target="#jsonUploadModal" style="display: none;">
+                  Save as Json file
+              </a>
+                    <!-- <a class="dropdown-item" href="#" data-toggle="modal" data-target="#observerListModal">
+                      <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
+                      Observer User List
+                  </a> -->
+                  </div>
+              </li>
+
+          </ul>
+
+      </nav>
+
+
+  </div>
+	<div class="container-fluid" style="width: 1200; height: 1500; border: none; margin-right: 8px !important;">
+    
+    <div>
+      <div id="WhiteBoard" style="vertical-align: top;width: auto; height: auto; border:none; ">
+        <!-- WhiteBoardToolbar start  -->
+        <div id="WhiteBoardToolbar" style="border: none; display: inline-block;">
+         
+        <button class="btn btn-light btn-sm button_pen" style="width: 32px; height: 32px;" value="pencil" id="pencelTool"><i class="fas fa-pen-fancy" style="font-size:26px"></i></button><br/>
+        <button  class="btn btn-light button_line btn-sm " style="width: 32px; height: 32px;" value="line" id="lineTool"><i class="fas fa-minus" style="font-size:26px"></i></button><br/>
+        <button  class="btn btn-light button_rect btn-sm" style="width: 32px; height: 32px;" value="rect" id="rectangleTool"><i class="far fa-square" style="font-size:26px"></i></button><br/>
+        <button  class="btn btn-light button_circle btn-sm" style="width: 32px; height: 32px;" value="circle" id="circleTool"><i class="far fa-circle" style="font-size:26px" ></i></button><br/>
+        <span class="form-group" style="display: inline-block;margin-left: 7px;  width: 48px;height: 11px;">
+          <!-- thickness start -->
+          <select class="form-control lineTh" id="thicknessChangeTool">
+            <option value="2">2</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="9">9</option>
+            <option value="12">12</option>
+          </select>
+        </span><br/>
+       
+        <button  class="btn btn-light button_fontSize btn-sm" value="text" id="textTool"><i class="fas fa-font" style="font-size:26px"></i></button><br/>
+      
+        <!-- font family start -->
+         <span class="form-group" style="width: 45px !important;margin-left: 8px; display: inline-block;">
+          <select class="form-control" id="txtFamilyTool">
+            <option class="serif" value="serif">serif</option>
+            <option class="Arial" value="Arial" selected>Arial</option>
+            <option class="Verdana" value="Verdana" >Verdana</option>
+            <option class="sans-serif" value="sans-serif">sans-serif</option>
+            <option class="Courier" value="Courier New">Courier New</option>  
+          </select>
+        </span>
+        <span class="form-group" style="width: 90px;display:none;border: none;background-color: transparent;">
+          <select class="form-control fontSize" id="txtSizeTool">
+            <option value="16" selected>14 Px</option>          
+          </select>
+        </span><br/>
+        <button  class="btn btn-success btn-sm" id="canvas_clear"><i class="fas fa-trash" style="font-size:25px"></i></button><br/>
+        <label for="colour" ><img style="margin-left: 16px; width: 31px; height: 31px; " src="assets/pickcolor.jpg">:</label><br/>
+        <input id="changeColor"  value="#3264ff" style="width:30px;height: 30px; margin-left: 15px;" class="jscolor {width:220, height:140, position:'right',insetColor:'#FFF', borderColor:'#FFF',  backgroundColor:'#666'}"><br/>
+        <button type="button" class="btn-light btn  btn-sm " id="canvas_save" data-toggle="tooltip" data-placement="right" title="Save as png file"><i class="far fa-save" style="font-size:26px"></i> </button>
+        <button type="button" class="btn-light btn  btn-sm " id="json_save" data-toggle="tooltip" data-placement="right" title="Save as json file"><i class="far fa-save" style="font-size:26px"></i></button>
+        <button type="button" class="btn-light btn  btn-sm " id="json_upload" data-toggle="tooltip" data-placement="right" title="Upload json file"><i class="fa fa-upload" style="font-size:26px"></i></button><br/>
+        </div>
+       
+        <div id="container" style="display: inline-block;vertical-align: top;">
+          <canvas id="canvasDisplayWhiteboard" width="1200" height="1515">
+           
+          </canvas>
+        </div>
+      </div>
+      
+
+    </div>
+    <div class="modal fade" role="dialog" id="userListModal" tabindex="-1"  aria-hidden="true"  aria-labelledby="exampleModalLabel">
+      <div class="modal-dialog" role="document" >
+          <div class="modal-content userListModalContent">
+              <div class="modal-header userListModalContent">
+                  <h5 class="modal-title userListModalContent" id="exampleModalLabel">Users List</h5>
+                  <button class="close button_userListModalClose"  data-dismiss="modal" type="button" aria-label="Close">
+                      <span aria-hidden="true">×</span>
+                  </button>
+              </div>
+              <div class="modal-body userListModalBody" style="height: 300px!important;" >
+                
+                <div id='userLists' className = "list-group userList" style="border:1px solid rgb(19, 19, 22); margin-right: 1px;">
+              
+                </div>
+              </div>
+              <div class="modal-footer">
+                  <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                  
+              </div>
+          </div>
+      </div>
+    </div>
+    <div class="modal fade" role="dialog" id="SaveConfirmModal" tabindex="-1"  aria-hidden="true"  aria-labelledby="exampleModalLabel">
+      <div class="modal-dialog" role="document" >
+          <div class="modal-content observerListModalContent">
+              <div class="modal-header observerListModalContent">
+                  <h5 class="modal-title observerListModalContent" id="exampleModalLabel3">Save Confirm</h5>
+                  
+              </div>
+              <div class="modal-body observerListModalBody" style="height: 200px!important;" >
+                
+                <h3>Do you save whiteBoard as png file?</h3>
+                <button class="btn btn-secondary" id="saveYes" type="submit" >Yes</button>
+                  <button class="btn btn-secondary" id="saveNo" type="button" data-dismiss="modal">No</button>
+                </div>
+              </div>
+              <div class="modal-footer">
+                
+                  
+              </div>
+          </div>
+      </div>
+    </div>
+    <div class="modal fade" role="dialog" id="jsonSaveConfirmModal" tabindex="-1"  aria-hidden="true"  aria-labelledby="exampleModalLabel">
+      <div class="modal-dialog" role="document" >
+          <div class="modal-content jsonSaveConfirmModal">
+              <div class="modal-header jsonSaveConfirmModal">
+                  <h5 class="modal-title jsonSaveConfirmModal" id="exampleModalLabel2">Save Confirm</h5>
+                  
+              </div>
+              <div class="modal-body jsonSaveConfirmModal" style="height: 150px!important;" >
+                
+                <h3>Do you save whiteBoard as json file?</h3>
+                <button class="btn btn-secondary" id="jsonsaveYes" type="button" data-dismiss="modal">Yes</button>
+                  <button class="btn btn-secondary" id="jsonsaveNo" type="button" data-dismiss="modal">No</button>
+                </div>
+              </div>
+             
+          </div>
+      </div>
+    </div>
+    <div class="modal fade" role="dialog" id="workingListModal" tabindex="-1"  aria-hidden="true"  aria-labelledby="exampleModalLabel">
+      <div class="modal-dialog" role="document" >
+          <div class="modal-content workingListModalContent">
+              <div class="modal-header workingListModalContent">
+                  <h5 class="modal-title workingListModalContent" id="exampleModalLabel">Users List</h5>
+                  <button class="close button_workingListModalClose"  data-dismiss="modal" type="button" aria-label="Close">
+                      <span aria-hidden="true">×</span>
+                  </button>
+              </div>
+              <div class="modal-body workingListModalBody" style="height: 300!important;" >
+                
+                <div id='workingLists' className = "list-group workingList" style="border:1px solid rgb(19, 19, 22); margin-right: 1px;">
+            
+                </div>
+              </div>
+              <div class="modal-footer">
+                  <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                  
+              </div>
+          </div>
+      </div>
+    </div>
+    <div class="modal fade" role="dialog" id="jsonSaveModal" tabindex="-1"  aria-hidden="true"  aria-labelledby="exampleModalLabel">
+      <div class="modal-dialog" role="document" >
+          <div class="modal-content jsonSavetModal">
+              <div class="modal-header jsonSavetModal">
+                  <h5 class="modal-title jsonSavetModal" id="exampleModalLabel1">Save as Json file</h5>
+                  <button class="close jsonSavetModal"  data-dismiss="modal" type="button" aria-label="Close">
+                      <span aria-hidden="true">×</span>
+                  </button>
+              </div>
+              <div class="modal-body jsonSavetModal" style="height: 100px!important;" >
+                
+                <input type="text" style="width: 100%;" placeholder="Please enter the name of file" id="filename">
+                <button class="btn btn-secondary " id="jsonSave" type="button" data-dismiss="modal">Save</button>
+                <button class="btn btn-secondary" id="jsonsaveCancel" type="button" data-dismiss="modal">Cancel</button>
+              </div>
+          </div>
+      </div>
+    </div>
+    <div class="modal fade" role="dialog" id="jsonUploadModal" tabindex="-1"  aria-hidden="true"  aria-labelledby="exampleModalLabel">
+      <div class="modal-dialog" role="document" >
+          <div class="modal-content jsonUploadModal">
+              <div class="modal-header jsonUploadModal">
+                  <h5 class="modal-title jsonUploadModal" id="exampleModalLabel11">Open Json file</h5>
+                  <button class="close jsonUploadModal"  data-dismiss="modal" type="button" aria-label="Close">
+                      <span aria-hidden="true">×</span>
+                  </button>
+              </div>
+              <div class="modal-body jsonUploadModal" style="height: 100px!important;" >
+                
+                <input type="text" style="width: 100%;" placeholder="Please enter the name of file" id="uploadfilename">
+                <button class="btn btn-secondary " id="jsonUpload" type="button" data-dismiss="modal">Open</button>
+                <button class="btn btn-secondary" id="jsonUploadCancel" type="button" data-dismiss="modal">Cancel</button>
+              </div>
+          </div>
+      </div>
+    </div>
+        <!-- jquery script file start -->
+        <script src= 'assets/js/jquery.min.js'></script>
+        <!-- jquery script file end -->
+
+        <!-- bootstrap script file start -->
+        <script src="assets/bootstrap/js/bootstrap.bundle.min.js"></script>
+        <!-- bootstrap script file start -->
+        <!-- color picker script file start -->
+        <script src="assets/js/jscolor.js"></script>
+        <!-- color picker script file end -->
+
+        <!-- socket.io communication script file client start -->
+        <script src="/socket.io/socket.io.js"></script>
+        <!-- socket.io communication script file client end -->
+        <script src="assets/js/global.js"></script>
+        <script src="assets/js/whiteboardTextareadrawingTool.js"></script>
+        <script src="assets/js/toolClick.js"></script>
+        <script src="assets/js/updateImg.js"></script>
+        <script src="assets/js/penUsingDrawing.js"></script>
+        <script src="assets/js/rectDrawing.js" ></script>
+        <script src="assets/js/lineDrawing.js"></script>
+        <script src="assets/js/circleDrawing.js"></script>
+
+        <script src="assets/js/rectDrawingfunction.js"></script>
+        <!-- whiteboard script file start -->
+		    <script src="assets/js/whiteboard.js"></script> 
+		     <!--whiteboard control script file end  -->
+         <script src='assets/js/socket_client.js'></script>
+     <script type="text/javascript">
+      $(document).ready(function(){
+        var socket = io();
+        $("#signout" ).click(function() {
+              localStorage.clear();
+              window.location.href = "index.html"
+
+          });
+          var board_url = window.location.href;
+          $('.linkToBoard').attr("href",board_url);
+          console.log(localStorage.getItem('username'));
+          $("#userName").text(localStorage.getItem("username"));
+
+      });
+    </script>
+    <script type="text/javascript" >
+        document.getElementById('canvas_clear').disabled=true;
+        document.getElementById('canvas_save').style.display="none";
+        document.getElementById('json_save').style.display="none";
+        document.getElementById('json_upload').style.display="none";
+        var username = localStorage.getItem("username");
+        //socket object instance
+        var socket = io();
+        //function to vote the leader of this white board
+          function leaderVoting(votedUser){
+            var votedUsername= votedUser.getAttribute("id");
+        
+         if(localStorage.getItem('voted')==undefined && localStorage.getItem('leader')==undefined){
+         //select voted user as leader
+          var votedUsername= votedUser.getAttribute("id");
+          //user who voted the leader can't vote anohter leader again
+          var elems = document.getElementsByClassName("userSelectButton");
+          for(var i = 0; i < elems.length; i++) {
+              elems[i].disabled = true;
+          }
+          //user who voted the leader is disabled, so he can't vot another leader again
+            // snackbar display start
+           document.getElementById('mysnackbar').innerText=`You voted ${votedUsername} as leader of this whiteboard system`;
+				   var snackbarEle=document.getElementById("mysnackbar11").classList;                 
+					 console.log(snackbarEle);
+				   snackbarEle.add("show");
+				  	setTimeout(function(){ snackbarEle.remove("show");}, 3000);
+            //snackbar display end
+         $("#desc").text("Voted")
+          var data = {username,votedUsername};
+
+         socket.emit(LEADER_VOTE, data);
+        } else  {
+            workingUser=votedUsername;
+             var tx1= "<button id='" + workingUser + "1' class='workingSelectButton'>" + workingUser + "</button><br>" ;
+              $("#workingLists").append(tx1);
+              $("#workingLists").animate({ scrollTop: $("#workingLists").height() }, "slow");
+            socket.emit(USER_JOIN, workingUser);
+            // snackbar display start
+            document.getElementById('mysnackbar').innerText=`You allowed the permission so that ${workingUser} can start the working on  whiteboard!`;
+				     var snackbarEle=document.getElementById("mysnackbar11").classList;                 
+					   console.log(snackbarEle);
+             snackbarEle.add("show");
+             setTimeout(function(){ snackbarEle.remove("show");}, 3000);
+            //snackbar display end
+           
+        } 
+       
+      }
+    </script>
+
+	</body>
+</html>

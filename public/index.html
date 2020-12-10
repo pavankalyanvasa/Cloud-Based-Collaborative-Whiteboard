@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<!-- Basic Page Info -->
+	<meta charset="utf-8">
+	<title>WhiteBoard System</title>
+
+	<link rel="apple-touch-icon" sizes="180x180" href="vendors/images/apple-touch-icon.png">	
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="icon" type="image/png" sizes="32x32" href="vendors/images/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="vendors/images/favicon-16x16.png">
+	<link rel="stylesheet" type="text/css" href="vendors/styles/style.css">
+	<script src="assets/js/snackbar.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="vendors/styles/core.css">
+
+	
+	<script src="password.js"></script>
+<style>
+		
+		#mysnackbar11.show {
+		visibility: visible;
+		-webkit-animation: fadein 0.4s, fadeout 0.4s 2.4s;
+		animation: fadein 0.4s, fadeout 0.4s 2.4s;
+		}
+		#mysnackbar11 {
+	    visibility: hidden;
+		min-width: 270px;
+	    border-radius: 5px;
+		position: fixed;
+		margin-left: -120px;
+		top: 35px;
+		font-size: 15px;
+		background-color: rgb(18, 194, 18);
+		color: rgb(38, 90, 46);
+		text-align: left;
+		padding: 12px;
+		
+		z-index: 1;
+		left: 80%;
+		
+		}
+
+		@-webkit-keyframes fadeout {
+		from {top: 35px; opacity: 1;} 
+		to {top: 0; opacity: 0;}
+		}
+
+		@keyframes fadeout {
+		from {top: 35px; opacity: 1;}
+		to {top: 0; opacity: 0;}
+		}
+		@-webkit-keyframes fadein {
+		from {top: 0; opacity: 0;} 
+		to {top: 35px; opacity: 1;}
+		}
+
+		@keyframes fadein {
+		from {top: 0; opacity: 0;}
+		to {top: 35px; opacity: 1;}
+		}
+
+	
+		
+		.myfont {
+		font-family: var(--Lobster);
+		padding: 0;
+		margin: 0;
+		}
+</style>
+</head>
+<body class="login-page">
+	<div class="login-header box-shadow">
+		<div class="container-fluid d-flex justify-content-between align-items-center">
+			<div class="brand-logo">
+				<h3 style="margin-top: 15px">WhiteBoard System</h3>
+			</div>
+		</div>
+	</div>
+	
+	<div class="login-wrap d-flex align-items-center flex-wrap justify-content-center">
+		<div class="container">
+			
+			<div id="mysnackbar11"><i class="fa fa-warning" style="font-size:25px;color:rgb(173, 206, 29)"></i><span id="mysnackbar"></span> </div>
+			<div class="row align-items-center">
+				<div class="col-md-6 col-lg-7">
+					<img src="vendors/images/login-page-img.png" alt="">
+				</div>
+				<div class="col-md-6 col-lg-5">
+					<div class="login-box bg-white box-shadow border-radius-10">
+						<div class="login-title">
+							<h2 class="text-center text-primary">Login To WhiteBoard</h2>
+						</div>
+						<form>
+							<div class="select-role">
+								<div class="btn-group btn-group-toggle" data-toggle="buttons">
+									
+									
+								</div>
+							</div>
+							<div class="input-group custom">
+								<input type="text" class="form-control form-control-lg currentUsername" placeholder="Username">
+								<div class="input-group-append custom">
+									<span class="input-group-text"><i class="icon-copy dw dw-user1"></i></span>
+								</div>
+							</div>
+							<div class="input-group custom">
+								<input  type="password" class="form-control form-control-lg enteredPassword" placeholder="**********">
+								<div class="input-group-append custom">
+									<span class="input-group-text"><i class="dw dw-padlock1"></i></span>
+								</div>
+							</div>
+							
+							<div class="row">
+								<div class="col-sm-12">
+									<div class="input-group mb-0">
+										<a id="login" onclick="submit()" class="btn btn-primary btn-lg btn-block" href="#">Sign In</a>
+									</div>
+									
+									
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+	</div>
+	<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+	<script>
+          	if (localStorage.length > 0 )localStorage.clear();
+		    function submit(){
+					console.log("submit")
+					var currentUsername = document.getElementsByClassName("currentUsername")[0].value;
+					if (currentUsername == "") {
+						document.getElementById('mysnackbar').innerText="Username must be filled!";
+					    var ele=document.getElementById("mysnackbar11").classList;                 
+					   console.log(ele)
+						ele.add("show");setTimeout(function(){ ele.remove("show");}, 3000);
+					
+					}else{
+						var enteredPassword= document.getElementsByClassName("enteredPassword")[0].value;
+							console.log(enteredPassword) 
+							if(password==enteredPassword){
+								let data = {"user":currentUsername};
+								var request = $.ajax({
+									url: 'http://localhost:8080/signin',
+									data: data,
+									type: 'POST'
+								});
+								request.done(function( msg ) {
+									if(msg=="OK"){
+											localStorage.setItem('username',currentUsername);
+											window.location.href = "main.html";
+										} else{
+											document.getElementById('mysnackbar').innerText="User name already exist! ";
+											var ele=document.getElementById("mysnackbar11").classList;                 
+											console.log(ele)
+											ele.add("show");
+											setTimeout(function(){ ele.remove("show");}, 3000);
+										}
+										});
+										
+										request.fail(function( jqXHR, textStatus ) {
+											document.getElementById('mysnackbar').innerText="Server disconnected! ";
+											var ele=document.getElementById("mysnackbar11").classList;                 
+											console.log(ele)
+											ele.add("show");
+											setTimeout(function(){ ele.remove("show");}, 3000);
+										});
+							}else{
+								document.getElementById('mysnackbar').innerText="Please enter password correctly!";
+								var ele=document.getElementById("mysnackbar11").classList;                 
+										console.log(ele)
+										ele.add("show");
+										setTimeout(function(){ ele.remove("show");}, 3000);
+						}
+                 }
+				}
+ 
+            
+       // });
+
+    </script>
+</body>
+</html>

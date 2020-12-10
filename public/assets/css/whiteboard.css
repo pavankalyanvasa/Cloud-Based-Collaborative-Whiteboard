@@ -1,0 +1,166 @@
+/* Variables */
+:root{
+  --primary-gradient: linear-gradient(to right, #554d72, #2b5876);
+  --mango-gradient : linear-gradient(to right, #ffa751, #ffe259);
+  --text-color: #e5eeee;
+  --Montserrat: "Montserrat", cursive;
+  --Lobster: "Lobster", cursive;
+  --primary-shadow: 3px 4px 7px rgba(32, 28, 28, 0.534);
+  --border-color: rgba(29, 28, 28, 0.329);
+}
+#userName {
+    font-size: 1.9rem;
+}
+#container { position: relative; }
+#container{
+  width: 1200;
+  height: 1500;
+  
+}
+
+#canvasTemp { position: absolute; top: 1px; left: 1px; }
+canvas {
+  cursor: url(../pencil.png), crosshair;
+}
+#userLists {
+  border-radius: 0.5rem;
+  overflow-y: scroll;
+  line-height:1;
+  text-align: center;
+  height: 250px;
+ 
+  }
+  #workingLists {
+    border-radius: 0.5rem;
+    overflow-y: scroll;
+    line-height:1;
+    text-align: center;
+    height: 250px;
+   
+    }
+  #workingLists > button {
+    width: 100%;
+  }
+#WhiteBoard{
+    margin-top: 5px !important;
+ 
+}
+
+.container-fluid .btn.btn-sm{
+background:transparent;
+color: black;
+outline: none;
+cursor: pointer;
+text-shadow: 0 0.8px rgb(16, 27, 44);
+display: inline-block;
+font-size: 15px;
+border: none;
+border-radius: 4.5px;
+padding: 10;
+margin: 10px;
+
+}
+
+.btn.btn-sm:active {
+  border: none;
+  color: red;
+  border: none;
+  outline: none;
+  background: rgb(29, 31, 128) !important;
+}
+.btn.btn-sm:hover {
+  color: yellow;
+  border: none;
+  outline: none;
+}
+.btn.btn-sm:visited {
+  color: rgb(57, 47, 192);
+  border: none;
+  outline: none;
+  background-color: transparent;
+}
+	
+#mysnackbar11.show {
+  visibility: visible;
+  -webkit-animation: fadein 0.4s, fadeout 0.4s 2.4s;
+  animation: fadein 0.4s, fadeout 0.4s 2.4s;
+  }
+  #mysnackbar11 {
+    visibility: hidden;
+  min-width: 270px;
+    border-radius: 5px;
+  position: fixed;
+  margin-left: -120px;
+  top: 35px;
+  font-size: 15px;
+  background-color: rgb(18, 194, 18);
+  color: rgb(38, 90, 46);
+  text-align: left;
+  padding: 12px;
+  
+  z-index: 1;
+  left: 80%;
+  
+  }
+
+  @-webkit-keyframes fadeout {
+  from {top: 35px; opacity: 1;} 
+  to {top: 0; opacity: 0;}
+  }
+
+  @keyframes fadeout {
+  from {top: 35px; opacity: 1;}
+  to {top: 0; opacity: 0;}
+  }
+  @-webkit-keyframes fadein {
+  from {top: 0; opacity: 0;} 
+  to {top: 35px; opacity: 1;}
+  }
+
+  @keyframes fadein {
+  from {top: 0; opacity: 0;}
+  to {top: 35px; opacity: 1;}
+  }
+
+
+  
+  .myfont {
+  font-family: var(--Lobster);
+  padding: 0;
+  margin: 0;
+  }
+button {
+font-size: 2.1em; 
+padding: 10px;
+text-align: center;
+}
+#userLists > button {
+  width: 100%;
+  } 
+.isDisabled > a {
+color: currentColor;
+cursor: not-allowed;
+opacity: 0.5;
+text-decoration: none;
+}
+
+#text_tool {
+  outline: 0;
+  z-index:1000 !important;
+  white-space: nowrap;
+  position: absolute;
+  border: 1px dashed black;
+  display: none;
+  }
+
+.container .btn.btn-sm:active{
+background: rgb(94, 173, 147); 
+}
+label{
+color: rgb(196, 186, 186);
+}
+.myfont {
+  font-family: var(--Lobster);
+  padding: 0;
+  margin: 0;
+}
